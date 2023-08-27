@@ -48,7 +48,7 @@ services:
 
   supernets2-sequencer:
     container_name: supernets2-sequencer
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     ports:
       - 9092:9091 # needed if metrics enabled
       - 6060:6060
@@ -65,7 +65,7 @@ services:
 
   supernets2-sequence-sender:
     container_name: supernets2-sequence-sender
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     environment:
       - SUPERNETS2_NODE_STATEDB_HOST=supernets2-state-db
       - SUPERNETS2_NODE_POOL_DB_HOST=supernets2-pool-db
@@ -81,7 +81,7 @@ services:
 
   supernets2-json-rpc:
     container_name: supernets2-json-rpc
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     ports:
       - 8123:8123
       - 8133:8133 # needed if WebSockets enabled
@@ -99,7 +99,7 @@ services:
 
   supernets2-aggregator:
     container_name: supernets2-aggregator
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     ports:
       - 50081:50081
       - 9093:9091 # needed if metrics enabled
@@ -116,7 +116,7 @@ services:
 
   supernets2-sync:
     container_name: supernets2-sync
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     environment:
       - SUPERNETS2_NODE_STATEDB_HOST=supernets2-state-db
     volumes:
@@ -129,7 +129,7 @@ services:
 
   supernets2-eth-tx-manager:
     container_name: supernets2-eth-tx-manager
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     ports:
       - 9094:9091 # needed if metrics enabled
     environment:
@@ -146,7 +146,7 @@ services:
 
   supernets2-l2gaspricer:
     container_name: supernets2-l2gaspricer
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     environment:
       - SUPERNETS2_NODE_POOL_DB_HOST=supernets2-pool-db
     volumes:
@@ -278,7 +278,7 @@ services:
 
   supernets2-explorer-json-rpc:
     container_name: supernets2-explorer-json-rpc
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     ports:
       - 8124:8124
       - 8134:8134 # needed if WebSockets enabled
@@ -308,10 +308,10 @@ services:
 
   supernets2-mock-l1-network:
     container_name: supernets2-mock-l1-network
-    image: hermeznetwork/geth-supernets2-contracts:v0.0.2
+    image: snapchain/geth-cdk-validium-contracts
     ports:
       - 8545:8545
-      - 8546:8546
+      - 8546:8546 
     command:
       - "--http"
       - "--http.api"
@@ -335,6 +335,44 @@ services:
       - "--syncmode"
       - "full"
       - "--rpc.allow-unprotected-txs"
+
+  supernets2-data-availability:
+    container_name: supernets2-data-availability
+    restart: unless-stopped
+    depends_on:
+      supernets2-data-availability-db:
+        condition: service_healthy
+    image: snapchain/cdk-data-availability
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+        reservations:
+          memory: 512M
+    ports:
+      - 8444:8444
+    volumes:
+      - ./config/test.dac.docker.toml:/app/config.toml
+      - ./config/test.dac.member.keystore:/pk/test-member.keystore
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/supernets2-data-availability run --cfg /app/config.toml"
+
+  dac-setup-committee:
+    container_name: dac-setup-committee
+    image: snapchain/dac-setup-committee
+    depends_on:
+      supernets2-mock-l1-network:
+        condition: service_started
+      supernets2-data-availability:
+        condition: service_started
+    volumes:
+      - ./deploy_output.json:/cdk-validium-contracts/docker/scripts/deploy_output.json          
+    environment:
+      - JSONRPC_HTTP_URL=http://supernets2-mock-l1-network:8545
+      - DAC_URL=http://supernets2-data-availability:8444
+      - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
 
   supernets2-prover:
     container_name: supernets2-prover
@@ -362,7 +400,7 @@ services:
 
   supernets2-approve:
     container_name: supernets2-approve
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     environment:
       - SUPERNETS2_NODE_STATEDB_HOST=supernets2-state-db
     volumes:
@@ -398,7 +436,7 @@ services:
 
   supernets2-permissionless-node-forced-DAC:
     container_name: supernets2-permissionless-node-forced-DAC
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     ports:
       - 8125:8125
     environment:
@@ -426,7 +464,7 @@ services:
 
   supernets2-permissionless-node:
     container_name: supernets2-permissionless-node
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     ports:
       - 8125:8125
     environment:
@@ -451,8 +489,8 @@ services:
       - "-c"
       - "/app/supernets2-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
 
-  supernets2-data-node-db:
-    container_name: supernets2-data-node-db
+  supernets2-data-availability-db:
+    container_name: supernets2-data-availability-db
     restart: unless-stopped
     image: postgres
     healthcheck:
@@ -498,7 +536,7 @@ services:
 
   supernets2-sh:
     container_name: zkevm-sh
-    image: supernets2-node
+    image: snapchain/cdk-validium-node
     stdin_open: true 
     tty: true
     environment:
