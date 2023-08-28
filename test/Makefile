@@ -9,7 +9,7 @@ DOCKERCOMPOSEAPPETHTXMANAGER := supernets2-eth-tx-manager
 DOCKERCOMPOSESTATEDB := supernets2-state-db
 DOCKERCOMPOSEPOOLDB := supernets2-pool-db
 DOCKERCOMPOSEEVENTDB := supernets2-event-db
-DOCKERCOMPOSEDACDB := supernets2-data-availability-db
+DOCKERCOMPOSEDACDB := supernets2-data-node-db
 DOCKERCOMPOSENETWORK := supernets2-mock-l1-network
 DOCKERCOMPOSEDAC := supernets2-data-availability
 DOCKERCOMPOSESETUPDAC := dac-setup-committee
@@ -489,6 +489,7 @@ run: ## Runs a full node
 	$(RUNL2GASPRICER)
 	$(RUNAGGREGATOR)
 	$(RUNJSONRPC)
+	$(MAKE) run-explorer
 
 .PHONY: stop
 stop: ## Stops all services

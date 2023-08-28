@@ -224,7 +224,7 @@ services:
 
   supernets2-explorer-l1:
     container_name: supernets2-explorer-l1
-    image: hermeznetwork/hermez-node-blockscout:latest
+    image: scmorgan/sc-hermez-zkevm-explorer:latest
     ports:
       - 4000:4000
     environment:
@@ -257,7 +257,7 @@ services:
 
   supernets2-explorer-l2:
     container_name: supernets2-explorer-l2
-    image: hermeznetwork/hermez-node-blockscout:latest
+    image: scmorgan/sc-hermez-zkevm-explorer:latest
     ports:
       - 4001:4000
     environment:
@@ -340,9 +340,9 @@ services:
     container_name: supernets2-data-availability
     restart: unless-stopped
     depends_on:
-      supernets2-data-availability-db:
+      supernets2-data-node-db:
         condition: service_healthy
-    image: snapchain/cdk-data-availability
+    image: hermeznetwork/cdk-data-availability:v0.0.1
     deploy:
       resources:
         limits:
@@ -357,7 +357,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/supernets2-data-availability run --cfg /app/config.toml"
+      - "/app/cdk-data-availability run --cfg /app/config.toml"
 
   dac-setup-committee:
     container_name: dac-setup-committee
@@ -489,8 +489,8 @@ services:
       - "-c"
       - "/app/supernets2-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
 
-  supernets2-data-availability-db:
-    container_name: supernets2-data-availability-db
+  supernets2-data-node-db:
+    container_name: supernets2-data-node-db
     restart: unless-stopped
     image: postgres
     healthcheck:
