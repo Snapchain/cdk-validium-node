@@ -12,13 +12,13 @@ endif
 GOBASE := $(shell pwd)
 GOBIN := $(GOBASE)/dist
 GOENVVARS := GOBIN=$(GOBIN) CGO_ENABLED=0 GOOS=linux GOARCH=$(ARCH)
-GOBINARY := supernets2-node
+GOBINARY := cdk-validium-node
 GOCMD := $(GOBASE)/cmd
 
-LDFLAGS += -X 'github.com/0xPolygonHermez/zkevm-node.Version=$(VERSION)'
-LDFLAGS += -X 'github.com/0xPolygonHermez/zkevm-node.GitRev=$(GITREV)'
-LDFLAGS += -X 'github.com/0xPolygonHermez/zkevm-node.GitBranch=$(GITBRANCH)'
-LDFLAGS += -X 'github.com/0xPolygonHermez/zkevm-node.BuildDate=$(DATE)'
+LDFLAGS += -X 'github.com/0xPolygon/cdk-validium-node.Version=$(VERSION)'
+LDFLAGS += -X 'github.com/0xPolygon/cdk-validium-node.GitRev=$(GITREV)'
+LDFLAGS += -X 'github.com/0xPolygon/cdk-validium-node.GitBranch=$(GITBRANCH)'
+LDFLAGS += -X 'github.com/0xPolygon/cdk-validium-node.BuildDate=$(DATE)'
 
 # Variables
 VENV           = .venv
