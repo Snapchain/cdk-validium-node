@@ -475,8 +475,9 @@ run: ## Runs a full node
 	$(RUNDACDB)
 	$(RUNL1NETWORK)
 	$(RUNDAC)
-	$(RUNSETUPDAC)
 	sleep 1
+	$(RUNSETUPDAC)
+	sleep 2
 	$(RUNZKPROVER)
 	$(RUNAPPROVE)
 	sleep 3
