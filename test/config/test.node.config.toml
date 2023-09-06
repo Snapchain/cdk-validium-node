@@ -134,6 +134,15 @@ URI  = "cdk-validium-prover:50061"
 URI = "cdk-validium-prover:50071"
 MaxGRPCMessageSize = 100000000
 
+[DataAvailability]
+PrivateKey = {Path = "/pk/test-member.keystore", Password = "testonly"}
+	[DataAvailability.L1]
+		RpcURL = "http://cdk-validium-mock-l1-network:8545"
+		DataCommitteeAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+	[DataAvailability.RPC]
+		Host = "cdk-validium-data-availability"
+		Port = 8444
+
 [Metrics]
 Host = "0.0.0.0"
 Port = 9091
