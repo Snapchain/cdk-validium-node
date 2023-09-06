@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	daCfg "github.com/0xPolygon/cdk-data-availability/config"
 	"github.com/0xPolygon/cdk-validium-node/aggregator"
 	"github.com/0xPolygon/cdk-validium-node/db"
 	"github.com/0xPolygon/cdk-validium-node/etherman"
@@ -108,6 +109,8 @@ type Config struct {
 	Executor executor.Config
 	// Configuration of the merkle tree client service. Not use in the node, only for testing
 	MTClient merkletree.Config
+	// Configuration of the data availability service
+	DataAvailability daCfg.Config
 	// Configuration of the state database connection
 	StateDB db.Config
 	// Configuration of the metrics service, basically is where is going to publish the metrics

@@ -153,6 +153,28 @@ func main() {
 			),
 		},
 		{
+			Name:    "setupCommittee",
+			Aliases: []string{"sc"},
+			Usage:   "Allows the admin to setup the members of the committee",
+			Action:  setupCommittee,
+			Flags: append(flags,
+				&cli.StringFlag{
+					Name:     config.FlagKeyStorePath,
+					Aliases:  []string{""},
+					Usage:    "the path of the key store file containing the private key of the account going to sign and setup committee",
+					Required: true,
+				},
+				&cli.StringFlag{
+					Name:     config.FlagPassword,
+					Aliases:  []string{"pw"},
+					Usage:    "the password do decrypt the key store file",
+					Required: true,
+				},
+				&networkFlag,
+				&customNetworkFlag,
+			),
+		},
+		{
 			Name:    "encryptKey",
 			Aliases: []string{},
 			Usage:   "Encrypts the privatekey with a password and create a keystore file",

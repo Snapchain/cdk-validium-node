@@ -11,7 +11,7 @@ DOCKERCOMPOSEPOOLDB := cdk-validium-pool-db
 DOCKERCOMPOSEEVENTDB := cdk-validium-event-db
 DOCKERCOMPOSENETWORK := cdk-validium-mock-l1-network
 DOCKERCOMPOSEDAC := cdk-validium-data-availability
-DOCKERCOMPOSESETUPDAC := dac-setup-committee
+DOCKERCOMPOSESETUPDAC := cdk-validium-setup-committee
 DOCKERCOMPOSEEXPLORERL1 := cdk-validium-explorer-l1
 DOCKERCOMPOSEEXPLORERL1DB := cdk-validium-explorer-l1-db
 DOCKERCOMPOSEEXPLORERL2 := cdk-validium-explorer-l2
@@ -469,6 +469,25 @@ stop-approve-matic: ## Stops approve in node container
 
 .PHONY: run
 run: ## Runs a full node
+	$(RUNSTATEDB)
+	$(RUNPOOLDB)
+	$(RUNEVENTDB)
+	$(RUNL1NETWORK)
+	sleep 1
+	$(RUNZKPROVER)
+	$(RUNAPPROVE)
+	sleep 3
+	$(RUNSYNC)
+	sleep 2
+	$(RUNETHTXMANAGER)
+	$(RUNSEQUENCER)
+	$(RUNSEQUENCESENDER)
+	$(RUNL2GASPRICER)
+	$(RUNAGGREGATOR)
+	$(RUNJSONRPC)
+
+.PHONY: run-validium
+run-validium: ## Runs a full validium node
 	$(RUNSTATEDB)
 	$(RUNPOOLDB)
 	$(RUNEVENTDB)

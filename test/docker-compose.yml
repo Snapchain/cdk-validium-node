@@ -361,21 +361,6 @@ services:
       - "-c"
       - "/app/cdk-data-availability run --cfg /app/config.toml"
 
-  dac-setup-committee:
-    container_name: dac-setup-committee
-    image: snapchain/dac-setup-committee
-    depends_on:
-      cdk-validium-mock-l1-network:
-        condition: service_started
-      cdk-validium-data-availability:
-        condition: service_started
-    volumes:
-      - deploy-output:/shared
-    environment:
-      - JSONRPC_HTTP_URL=http://cdk-validium-mock-l1-network:8545
-      - DAC_URL=http://cdk-validium-data-availability:8444
-      - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
-
   cdk-validium-prover:
     container_name: cdk-validium-prover
     image: hermeznetwork/zkevm-prover:v2.2.0
@@ -413,6 +398,19 @@ services:
       - "/bin/sh"
       - "-c"
       - "/app/cdk-validium-node approve --network custom --custom-network-file /app/genesis.json --key-store-path /pk/keystore --pw testonly --am 115792089237316195423570985008687907853269984665640564039457584007913129639935 -y --cfg /app/config.toml"
+
+  cdk-validium-setup-committee:
+    container_name: cdk-validium-setup-committee
+    image: snapchain/cdk-validium-node
+    volumes:
+      - ./sequencer.keystore:/pk/keystore
+      - ./config/test.dac.member.keystore:/pk/test-member.keystore
+      - ./config/test.node.config.toml:/app/config.toml
+      - ./config/test.genesis.config.json:/app/genesis.json
+    command:
+      - "/bin/sh"
+      - "-c"
+      - "/app/cdk-validium-node setupCommittee --network custom --custom-network-file /app/genesis.json --key-store-path /pk/keystore --pw testonly -y --cfg /app/config.toml"
 
   cdk-validium-permissionless-db:
     container_name: cdk-validium-permissionless-db

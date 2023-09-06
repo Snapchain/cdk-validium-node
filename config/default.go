@@ -145,6 +145,15 @@ MaxResourceExhaustedAttempts = 3
 WaitOnResourceExhaustion = "1s"
 MaxGRPCMessageSize = 100000000
 
+[DataCommittee]
+PrivateKey = {Path = "/pk/test-member.keystore", Password = "testonly"}
+	[DataCommittee.L1]
+		RpcURL = "http://cdk-validium-mock-l1-network:8545"
+		DataCommitteeAddress = "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6"
+	[DataCommittee.RPC]
+		Host = "cdk-validium-data-availability"
+		Port = 8444
+
 [Metrics]
 Host = "0.0.0.0"
 Port = 9091
